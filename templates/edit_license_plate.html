@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chỉnh sửa biển số xe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .cancel {
+            background-color: #f44336;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Chỉnh sửa biển số xe</h2>
+        <form method="POST">
+            <div class="form-group">
+                <label for="license_plate">Biển số xe:</label>
+                <input type="text" id="license_plate" name="license_plate" 
+                       value="{{ license_plate.license_plate if license_plate else '' }}" required>
+            </div>
+            <button type="submit" class="button">Lưu thay đổi</button>
+            <a href="{{ url_for('index') }}" class="button cancel">Hủy</a>
+        </form>
+    </div>
+</body>
+</html>

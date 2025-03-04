@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gửi thông báo vi phạm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .message-container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            height: 150px;
+        }
+        .button-group {
+            margin-top: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            margin-right: 10px;
+        }
+        .send {
+            background-color: #4CAF50;
+        }
+        .cancel {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="message-container">
+        <h2>Gửi thông báo vi phạm</h2>
+        <form method="POST">
+            <div class="form-group">
+                <label for="message">Nội dung thông báo:</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            <div class="button-group">
+                <button type="submit" class="button send">Gửi thông báo</button>
+                <a href="{{ url_for('index') }}" class="button cancel">Không gửi</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

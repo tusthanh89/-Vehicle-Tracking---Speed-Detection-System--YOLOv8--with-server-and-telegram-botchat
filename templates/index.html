@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vehicle Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        table {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        .details {
+            display: none;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .detail-content {
+            display: flex;
+            padding: 20px;
+            gap: 30px;
+        }
+        .personal-image {
+            max-width: 300px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 10px;
+        }
+        .info {
+            flex: 1;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .images {
+            flex: 2;
+            display: flex;
+            gap: 20px;
+        }
+        .image-container {
+            flex: 1;
+            text-align: center;
+        }
+        .info p {
+            margin: 10px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info p:last-child {
+            border-bottom: none;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 8px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .modal-buttons {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .modal-buttons button {
+            margin-left: 10px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .save-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .cancel-button {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+    <script>
+        function toggleDetails(event) {
+            const details = event.currentTarget.nextElementSibling;
+            if (details && details.classList.contains('details')) {
+                if (details.style.display === "none" || details.style.display === "") {
+                    details.style.display = "table-row";
+                } else {
+                    details.style.display = "none";
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Vehicle Detection System</h1>
+    </header>
+    <div class="container">
+        <h2>Detected Vehicles</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Ảnh xe</th>
+                    <th>Thời gian</th>
+                    <th>Tốc độ</th>
+                    <th>Ảnh biển số</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vehicle in vehicles %}
+                <tr onclick="toggleDetails(event)">
+                    <td>{{ vehicle.id }}</td>
+                    <td>
+                        <img src="{{ url_for('get_vehicle_image', id=vehicle.id) }}" 
+                             alt="Vehicle {{ vehicle.id }}" 
+                             class="vehicle-image">
+                    </td>
+                    <td>{{ vehicle.capture_time }}</td>
+                    <td>{{ vehicle.speed }} km/h</td>
+                    <td>
+                        {% if vehicle.image_license_data %}
+                            <img src="data:image/jpeg;base64,{{ vehicle.image_license_data.decode('utf-8') if vehicle.image_license_data else '' }}" 
+                                 alt="License Plate" 
+                                 class="vehicle-image"
+                                 onerror="console.log('Error loading image'); this.style.display='none';">
+                        {% else %}
+                            No plate image
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        {% if vehicle.license_plate_id %}
+                            <button onclick="openEditModal('{{ vehicle.license_plate_id }}', '{{ vehicle.license_plate }}')" 
+                                    class="action-button edit-button">Sửa biển số</button>
+                            <button onclick="openMessageModal('{{ vehicle.license_plate_id }}')" 
+                                    class="action-button send-button">Gửi thông báo</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr class="details">
+                    <td colspan="5">
+                        <div class="detail-content">
+                            <div class="info">  
+                                <p><strong>Số điện thoại:</strong> {{ vehicle.phone_number }}</p>
+                                <p><strong>Số căn cước:</strong> {{ vehicle.citizen_id }}</p>
+                                <p><strong>Địa chỉ:</strong> {{ vehicle.address }}</p>
+                                {% if vehicle.license_plate %}
+                                <p><strong>Biển số xe nhận diện được:</strong> {{ vehicle.license_plate }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="images">
+                                <div class="image-container">
+                                    <p><strong>Ảnh CCCD:</strong></p>
+                                    {% if vehicle.personal_image_data %}
+                                    <img src="data:image/jpeg;base64,{{ vehicle.personal_image_data }}" 
+                                         alt="CCCD {{ vehicle.id }}" 
+                                         class="personal-image">
+                                    {% else %}
+                                    No CCCD image
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>Chỉnh sửa biển số xe</h2>
+            <input type="text" id="editLicensePlate" class="form-control">
+            <input type="hidden" id="editLicensePlateId">
+            <div class="modal-buttons">
+                <button onclick="saveLicensePlate()" class="save-button">Lưu</button>
+                <button onclick="closeEditModal()" class="cancel-button">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeMessageModal()">&times;</span>
+            <h2>Gửi thông báo vi phạm</h2>
+            <textarea id="messageText" class="form-control" rows="4"></textarea>
+            <input type="hidden" id="messageLicensePlateId">
+            <div class="modal-buttons">
+                <button onclick="sendMessage()" class="save-button">Gửi</button>
+                <button onclick="closeMessageModal()" class="cancel-button">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openEditModal(id, licensePlate) {
+            document.getElementById('editModal').style.display = 'block';
+            document.getElementById('editLicensePlateId').value = id;
+            document.getElementById('editLicensePlate').value = licensePlate;
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        function openMessageModal(id) {
+            document.getElementById('messageModal').style.display = 'block';
+            document.getElementById('messageLicensePlateId').value = id;
+        }
+
+        function closeMessageModal() {
+            document.getElementById('messageModal').style.display = 'none';
+        }
+
+        function saveLicensePlate() {
+            const id = document.getElementById('editLicensePlateId').value;
+            const newLicensePlate = document.getElementById('editLicensePlate').value;
+            
+            fetch(`/edit_license_plate/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ license_plate: newLicensePlate })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Có lỗi xảy ra khi cập nhật biển số xe');
+                }
+            });
+        }
+
+        function sendMessage() {
+            const id = document.getElementById('messageLicensePlateId').value;
+            const message = document.getElementById('messageText').value;
+            
+            fetch(`/send_message/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeMessageModal();
+                    alert('Đã gửi thông báo thành công');
+                } else {
+                    alert('Có lỗi xảy ra khi gửi thông báo');
+                }
+            });
+        }
+    </script>
+</body>
+</html> 

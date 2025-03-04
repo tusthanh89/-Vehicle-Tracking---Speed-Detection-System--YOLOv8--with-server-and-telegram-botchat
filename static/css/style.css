@@ -1,0 +1,116 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+.vehicle-image {
+    max-width: 200px;
+    height: auto;
+    border-radius: 4px;
+}
+
+h1 {
+    color: #4CAF50;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #f5f5f5;
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.details {
+    display: none;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.detail-content {
+    display: flex;
+    align-items: flex-start;
+}
+
+.personal-image {
+    max-width: 150px;
+    height: auto;
+    border-radius: 4px;
+    margin-right: 20px;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.info p {
+    margin: 5px 0;
+}
+
+.action-button {
+    display: inline-block;
+    padding: 8px 15px;
+    margin: 2px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.edit-button {
+    background-color: #4CAF50;
+}
+
+.edit-button:hover {
+    background-color: #45a049;
+}
+
+.send-button {
+    background-color: #2196F3;
+}
+
+.send-button:hover {
+    background-color: #1976D2;
+}
+
+td.actions {
+    white-space: nowrap;
+    text-align: center;
+} 

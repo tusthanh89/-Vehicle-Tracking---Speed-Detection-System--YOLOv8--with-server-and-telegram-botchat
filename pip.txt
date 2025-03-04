@@ -1,0 +1,11 @@
+Flask
+python-telegram-bot
+opencv-python
+opencv-python-headless
+pandas
+numpy
+ultralytics
+cvzone
+mysql-connector-python
+sshtunnel
+pytesseract
