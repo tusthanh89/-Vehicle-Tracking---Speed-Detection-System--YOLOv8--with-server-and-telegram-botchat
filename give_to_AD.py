@@ -14,7 +14,7 @@ db_password = "tytyty6910"
 db_name = "vehicle"
 
 # Cấu hình Telegram Bot
-TELEGRAM_BOT_TOKEN = '7921391713:AAGiyC33IveNJw0t_l6tLcGXPlpPJfit6_s'
+TELEGRAM_BOT_TOKEN = '7921391713:'
 TELEGRAM_CHAT_ID = '1933971487'
 
 # Biến toàn cục để lưu ID của bản ghi cuối cùng đã gửi
